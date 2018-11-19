@@ -1,0 +1,25 @@
+<script>
+
+function calculate(num) {
+	document.write("Factors of: " + num + "<br /><br />");
+    var half = Math.floor(num / 2),
+        i, j, arr = [1];
+
+    // Determine out increment value for the loop and starting point.
+    num % 2 === 0 ? (i = 2, j = 1) : (i = 3, j = 2);
+
+    for (i; i <= half; i += j) {
+		if(num % i === 0){
+			arr[arr.length] = i;
+		}
+    }
+
+	arr[arr.length] = num;
+	
+	for(var i = 0; i < arr.length / 2; i++){
+		document.write(arr[i] + " => " + arr[arr.length - (i + 1)] + "<br />");
+	}
+}
+calculate(prompt("Enter number to factor:"));
+
+</script>

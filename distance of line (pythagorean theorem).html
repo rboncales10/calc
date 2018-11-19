@@ -1,0 +1,141 @@
+<script>
+
+function getFactors(num) {
+    var half = Math.floor(num / 2),
+        i, j, arr = [1];
+
+    // Determine out increment value for the loop and starting point.
+    num % 2 === 0 ? (i = 2, j = 1) : (i = 3, j = 2);
+
+    for (i; i <= half; i += j) {
+		if(num % i === 0){
+			arr[arr.length] = i;
+		}
+    }
+
+	arr[arr.length] = num;
+	
+	newArr = [];
+	for(var i = 0; i < arr.length / 2; i++){
+		var num1 = arr[i];
+		var num2 = arr[arr.length - (i + 1)];
+		if(isAcceptableSquare(num1) || isAcceptableSquare(num2)){
+			newArr[newArr.length] = [num1, num2];
+		}
+	}
+	return newArr;
+}
+
+function pyt(x1, y1, x2, y2) {
+	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">&nbsp;(X<sub>2</sub> - X<sub>1</sub>)<sup>2</sup> + (Y<sub>2</sub> - Y<sub>1</sub>)<sup>2</sup>&nbsp;</td></tr></table>");
+	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
+	
+	if(x1 > 0){
+		document.write("&nbsp;(" + x2 + " - " + x1 + ")");
+	}else{
+		document.write("&nbsp;[" + x2 + " - (" + x1 + ")]");
+	}
+	document.write("<sup>2</sup> + ");
+	if(y1 > 0){
+		document.write("&nbsp;(" + y2 + " - " + y1 + ")");
+	}else{
+		document.write("&nbsp;[" + y2 + " - (" + y1 + ")]");
+	}
+	document.write("<sup>2</sup>&nbsp;</td>");
+	
+	
+	
+	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
+	document.write("&nbsp;(" + (x2 - x1) + ")");
+	document.write("<sup>2</sup> + ");
+	document.write("&nbsp;(" + (y2 - y1) + ")");
+	document.write("<sup>2</sup>&nbsp;</td>");
+	
+	
+	
+	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
+	document.write("&nbsp;" + Math.pow(x2 - x1, 2));
+	document.write(" + ");
+	document.write("&nbsp;" + Math.pow(y2 - y1, 2));
+	document.write("&nbsp;</td>");
+	
+	
+	var sq = Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2);
+	
+	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
+	document.write("&nbsp;" + sq);
+	document.write("&nbsp;</td>");
+	
+	var sqrtFactors = function(factor1, factor2){
+		if(isAcceptableSquare(factor1)){
+			document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>__________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = " + Math.sqrt(factor1) + "&radic;</td><td style=\"padding:0px;\">");
+			document.write("&nbsp;" + factor2);
+			document.write("&nbsp;</td>");
+		} else if(isAcceptableSquare(factor1)) {
+			document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>__________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = " + Math.sqrt(factor2) + "&radic;</td><td style=\"padding:0px;\">");
+			document.write("&nbsp;" + factor1);
+			document.write("&nbsp;</td>");
+		}
+	};
+	
+	var facs = getFactors(sq);
+	
+	if(facs.length > 0){
+		sqrtFactors(facs[0][0], facs[0][1]);
+	}
+
+}
+
+function isPerfectSquare(n){
+	return n > 0 && Math.sqrt(n) % 1 === 0;
+}
+
+function isAcceptableSquare(n){
+	return n > 1 && isPerfectSquare(n);
+}
+
+function absX(x1, x2){
+	document.write("d = |X<sub>2</sub> - X<sub>1</sub>|<br />");
+	if(x1 > 0){
+		document.write("d = |(" + x2 + " - " + x1 + ")|<br />");
+	}else{
+		document.write("d = |[" + x2 + " - (" + x1 + ")]|<br />");
+		document.write("d = |(" + x2 + " + " + Math.abs(x1) + ")|<br />");
+	}
+	var fin = Math.abs(x2 - x1);
+	document.write("d = |" + fin + "|<br />");
+	document.write("d = " + fin + "<br />");
+}
+
+
+function absY(y1, y2){
+	document.write("d = |Y<sub>2</sub> - Y<sub>1</sub>|<br />");
+	if(y1 > 0){
+		document.write("d = |(" + y2 + " - " + y1 + ")|<br />");
+	}else{
+		document.write("d = |[" + y2 + " - (" + y1 + ")]|<br />");
+		document.write("d = |(" + y2 + " + " + Math.abs(y1) + ")|<br />");
+	}
+	var fin = Math.abs(y2 - y1);
+	document.write("d = |" + fin + "|<br />");
+	document.write("d = " + fin + "<br />");
+}
+
+
+function calc(x1, y1, x2, y2){
+	if(x1 == x2){
+		absY(y1, y2);
+	} else if(y1 == y2){
+		absX(x1, x2);
+	} else {
+		pyt(x1, y1, x2, y2);
+	}
+}
+
+var p1 = prompt("Enter Point 1 (X, Y):");
+p1 = p1.split(",");
+var p2 = prompt("Enter Point 2 (X, Y):");
+p2 = p2.split(",");
+calc(p1[0], p1[1], p2[0], p2[1]);
+
+</script>
