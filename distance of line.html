@@ -68,10 +68,14 @@ function pyt(x1, y1, x2, y2) {
 	
 	var sqrtFactors = function(factor1, factor2){
 		if(isAcceptableSquare(factor1)){
+			document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>__________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
+			document.write("&nbsp;" + factor1 + " &middot; " + factor2 + "&nbsp;</td>");
 			document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>__________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = " + Math.sqrt(factor1) + "&radic;</td><td style=\"padding:0px;\">");
 			document.write("&nbsp;" + factor2);
 			document.write("&nbsp;</td>");
 		} else if(isAcceptableSquare(factor1)) {
+			document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>__________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
+			document.write("&nbsp;" + factor1 + " &middot; " + factor2 + "&nbsp;</td>");
 			document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>__________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = " + Math.sqrt(factor2) + "&radic;</td><td style=\"padding:0px;\">");
 			document.write("&nbsp;" + factor1);
 			document.write("&nbsp;</td>");
