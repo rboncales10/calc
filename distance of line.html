@@ -30,13 +30,13 @@ function pyt(x1, y1, x2, y2) {
 	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">&nbsp;(X<sub>2</sub> - X<sub>1</sub>)<sup>2</sup> + (Y<sub>2</sub> - Y<sub>1</sub>)<sup>2</sup>&nbsp;</td></tr></table>");
 	document.write("<table style=\"border-spacing:0px; border-width:0px; font-family:verdana;\"><tr><td>&nbsp;</td><td>___________________</td></tr><tr><td style=\"padding:0px; font-size:larger\">d = &radic;</td><td style=\"padding:0px;\">");
 	
-	if(x1 > 0){
+	if(x1 > -1){
 		document.write("&nbsp;(" + x2 + " - " + x1 + ")");
 	}else{
 		document.write("&nbsp;[" + x2 + " - (" + x1 + ")]");
 	}
 	document.write("<sup>2</sup> + ");
-	if(y1 > 0){
+	if(y1 > -1){
 		document.write("&nbsp;(" + y2 + " - " + y1 + ")");
 	}else{
 		document.write("&nbsp;[" + y2 + " - (" + y1 + ")]");
@@ -100,7 +100,7 @@ function isAcceptableSquare(n){
 
 function absX(x1, x2){
 	document.write("d = |X<sub>2</sub> - X<sub>1</sub>|<br />");
-	if(x1 > 0){
+	if(x1 > -1){
 		document.write("d = |" + x2 + " - " + x1 + "|<br />");
 	}else{
 		document.write("d = |" + x2 + " - (" + x1 + ")|<br />");
@@ -113,7 +113,7 @@ function absX(x1, x2){
 
 function absY(y1, y2){
 	document.write("d = |Y<sub>2</sub> - Y<sub>1</sub>|<br />");
-	if(y1 > 0){
+	if(y1 > -1){
 		document.write("d = |" + y2 + " - " + y1 + "|<br />");
 	}else{
 		document.write("d = |" + y2 + " - (" + y1 + ")|<br />");
