@@ -1,0 +1,221 @@
+<body>
+
+<style>
+	sup {
+		color: red;
+	}
+
+	table {
+		border: 2px solid black;
+		border-spacing: 0;
+		border-collapse: collapse;
+	}
+
+	td {
+		text-align: center;
+		border-right: 2px solid black;
+	}
+
+	td.result {
+		text-align: center;
+		border-right: 2px solid black;
+		border-top: 2px solid black;
+	}
+
+	strike {
+		text-decoration: line-through;
+		color: grey;
+	}
+</style>
+
+<form action="#" method="GET" onsubmit="calculate()">
+	<!-- to-do for future me: Perhaps add regexp generation for input validation? -->
+	<select id="sys">
+		<!-- generate DOM here -->
+	</select>
+	<input id="x" style="text-transform: uppercase">
+	<select id="opr">
+		<option value="add">+</option>
+		<option value="sub">-</option>
+		<!--
+		we don't support these yet, too lazy... only doing this to review for the exam tomorrow
+
+		<option value="mul">x</option>
+		<option value="div">/</option>
+		-->
+	</select>
+	<input id="y" style="text-transform: uppercase">
+	<input type="submit" value="CALCULATE!">
+</form>
+
+<div id="out"> <!-- generate DOM here --> </div>
+
+<script>
+const NUMBER_SYSTEMS = {
+	"BIN": ["0","1"],
+	"OCT": ["0","1","2","3","4","5","6","7"],
+	"DEC": ["0","1","2","3","4","5","6","7","8","9"],
+	"TET": ["0","1","2","3","4","5","6","7","8","9","A","B","C"],
+	"HEX": ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"],
+};
+
+const x_elem = document.getElementById("x");
+const y_elem = document.getElementById("y");
+const s_elem = document.getElementById("sys");
+const o_elem = document.getElementById("opr");
+const v_elem = document.getElementById("out");
+
+Object.keys(NUMBER_SYSTEMS).forEach((i) => {
+	let e = document.createElement("option");
+	e.value = i;
+	e.text = i;
+	s_elem.appendChild(e);
+});
+
+let carry = [];
+let borrw = [];
+let dgts1 = [];
+let dgts2 = [];
+let reslt = [];
+let slash = [];
+
+Math.sum = function (...n){ // fuck knows why this isn't in stdlib
+	let sum = 0;
+	n.forEach((x) => {
+		sum += Number.parseInt(x);
+	})
+	return sum;
+};
+
+function calculate(){
+	carry = []; borrw = []; dgts1 = []; dgts2 = []; reslt = []; slash = [];
+
+	let valid_numbers = NUMBER_SYSTEMS[s_elem.value];  // idk what to call this
+	let radix = NUMBER_SYSTEMS[s_elem.value].length;
+	let symbol = o_elem.options[o_elem.selectedIndex].innerText;
+
+	let i;
+	for(i = x_elem.value.length - 1; i >= 0; i--){
+		let v = valid_numbers.indexOf(x_elem.value[i].toUpperCase());
+		if (v === -1) {
+			alert("INVALID DIGIT!!! encountered " + x_elem.value[i] + " expecting " + valid_numbers); return;
+		}
+		dgts1.push(v);
+	}
+	console.log("X:", dgts1);
+
+	for(i = y_elem.value.length - 1; i >= 0; i--){
+		let v = valid_numbers.indexOf(y_elem.value[i].toUpperCase());
+		if (v === -1) {
+			alert("INVALID DIGIT!!! encountered " + x_elem.value[i] + " expecting " + valid_numbers); return;
+		}
+		dgts2.push(v);
+	}
+	console.log("Y:", dgts2);
+
+	//v_elem.innerHTML = ""; // clear children of output
+
+	let max_len = Math.max(dgts1.length, dgts2.length);
+	for(i = 0; i < max_len; i++){
+		let v1 = dgts1[i] ?? 0;
+		let v2 = dgts2[i] ?? 0;
+		console.log(i, v1, v2);
+
+		let v;
+		switch(o_elem.value){
+			case "add":
+				v = (v1 + (carry[i] ?? 0)) + v2;
+				console.log(v1, "AND", v2, "ADDED =", v);
+				if (v >= radix) {
+					carry[i + 1] = Math.floor(v / radix);
+					console.log(" -- CARRY ", Math.floor(v / radix), " NEW CURRENT VALUE ", v - (carry[i + 1] * radix));
+					v -= (carry[i + 1] * radix);
+				}
+				break;
+			case "sub":
+				console.log("OLD: ", v1);
+				v1 += Math.sum(...(borrw[i] ?? []));
+				console.log("NEW: ", v1);
+				if (v1 < v2){
+					console.log("STARTING TO BORROW");
+					for (let k = i + 1; k < max_len; k++){ // we start borrowing until we're satisfied
+						console.log(" --- BORROWING FROM", k, " CURRENT BORROWS", borrw[i] ?? []);
+						//borrw[k] = (borrw[k] ?? []).concat([-1]);
+						// we reduce 1 from the number we're borrowing
+						dgts1[k] -= 1;
+						slash[k] = true;
+
+						borrw[k - 1] = (borrw[k - 1] ?? []).concat([1]); // we add 1 to where we came from
+						console.log(" --- CURRENT BORROWS", borrw[i] ?? []);
+
+						let borrowed = Math.sum(...(borrw[i])) * radix;
+						console.log(" --- CURRENT BORROW SUM ", borrowed);
+						if ((borrowed + v1) >= v2){
+							console.log(" --- IN THE END WE BORROWED ", borrowed);
+							v1 += borrowed;
+							break;
+						}
+					}
+				}
+
+				console.log("SUBTRACTING ", v2, " FROM ", v1);
+				v = v1 - v2;
+				console.log("v = ", v);
+				break;
+		}
+		reslt[i] = v;
+		console.log("-----------------------------------")
+	}
+	i = reslt.length - 1; // get last index
+	console.log(reslt[i]);
+	if ((reslt[i] ?? 0) >= radix){ // see if we should carry
+		carry[i + 1] = Math.floor(reslt[i] / radix);
+		reslt[i] = reslt[i] % radix;
+	}
+	for (i = reslt.length; i < carry.length; i++){
+		reslt[i] = carry[i];
+	}
+	console.log(reslt);
+
+	// display output
+	let _t = document.createElement("table");
+	let r1 = document.createElement("tr");
+	let oc = document.createElement("td");
+	oc.rowSpan = 3;
+	oc.innerHTML = `<p>${symbol}</p>`
+	r1.appendChild(oc);
+	let r2 = document.createElement("tr");
+	let r3 = document.createElement("tr");
+
+	console.log(borrw);
+
+	for (i = reslt.length - 1; i >= 0; i--){
+		let d1 = document.createElement("td");
+		let inner = valid_numbers[Math.max(0, dgts1[i])] ?? "";
+		if (slash[i]){
+			inner = `<strike>${inner}</strike>`;
+		}
+		d1.innerHTML = `<p><sup>${borrw[i] === undefined ? "" : borrw[i].reverse().join(" ")}</sup>${inner}<sup>${carry[i] ?? "&nbsp;"}</sup></p>`;
+		r1.appendChild(d1);
+
+		let d2 = document.createElement("td");
+		d2.innerHTML = `<p>${valid_numbers[dgts2[i]] ?? ""}</p>`;
+		r2.appendChild(d2);
+
+		reslt[i] = valid_numbers[reslt[i]] ?? `? (${reslt[i]})`;
+		let r = document.createElement("td");
+		r.className = "result";
+		r.innerHTML = `<p>${reslt[i]}</p>`;
+		r3.appendChild(r);
+	}
+	_t.appendChild(r1);
+	_t.appendChild(r2);
+	_t.appendChild(r3);
+	v_elem.prepend(_t);
+
+	let m1 = document.createElement("p");
+	m1.innerText = `${s_elem.value}: ${x_elem.value} ${symbol} ${y_elem.value} = ${reslt.reverse().join("")}`
+	v_elem.prepend(m1);
+}
+</script>
+</body>
