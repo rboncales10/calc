@@ -1,0 +1,86 @@
+<body>
+
+<form action="#" method="GET" onsubmit="calculate()">
+    <!-- to-do for future me: Perhaps add regexp generation for input validation? -->
+    <select id="source_base" class="base_selector">
+        <!-- generate DOM here -->
+    </select>
+    <input id="x" style="text-transform: uppercase">
+    ->
+    <select id="target_base" class="base_selector">
+        <!-- generate DOM here -->
+    </select>
+    <input id="y" style="text-transform: uppercase" readonly>
+    <input type="submit" value="CONVERT!">
+</form>
+
+<div id="out"> <!-- generate DOM here --> </div>
+
+<script>
+    const NUMBER_SYSTEMS = {
+        "BIN": ["0","1"],
+        "OCT": ["0","1","2","3","4","5","6","7"],
+        "DEC": ["0","1","2","3","4","5","6","7","8","9"],
+        "TET": ["0","1","2","3","4","5","6","7","8","9","A","B","C"],
+        "HEX": ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"],
+    };
+
+    const x_elem = document.getElementById("x");
+    const y_elem = document.getElementById("y");
+    const v_elem = document.getElementById("out");
+
+    const bs_sel = document.querySelectorAll(".base_selector");
+    const sc_sel = document.getElementById("source_base");
+    const tg_sel = document.getElementById("target_base");
+
+    bs_sel.forEach((s) => {
+        Object.keys(NUMBER_SYSTEMS).forEach((i) => {
+            let e = document.createElement("option");
+            e.value = i;
+            e.text = i;
+            s.appendChild(e);
+        })
+    });
+
+    function calculate(){
+        let source_chars = NUMBER_SYSTEMS[sc_sel.value];
+        let target_chars = NUMBER_SYSTEMS[tg_sel.value];
+        let source_radix = source_chars.length;
+        let target_radix = target_chars.length;
+
+        let source_value = x_elem.value;
+        let current_value = 0;
+        let current_power = 0;
+
+        console.log(`source_radix: ${source_radix}`)
+
+        for (let i = source_value.length - 1; i >= 0; i--){
+            let c_index = source_chars.indexOf(source_value[i]);
+            if (c_index === -1){
+                alert(`INVALID CHARACTER ${source_value[i]} IN POSITION ${i + 1}`);
+                return;
+            }
+
+            let digit_value = c_index * (source_radix ** current_power);
+            console.log(`${i} => ${c_index}*${source_radix}^${current_power} = ${digit_value}`);
+            current_value += digit_value;
+            current_power++;
+        }
+        console.log(`DEC: ${current_value}`);
+
+        let output = "";
+        do {
+            console.log(`${current_value} % ${target_radix} = ${current_value % target_radix} => ${target_chars[current_value % target_radix]}`);
+            output += target_chars[current_value % target_radix];
+            current_value = Math.floor(current_value / target_radix);
+        } while(current_value !== 0);
+        output = output.split("").reverse().join("");
+        console.log(output);
+        y_elem.value = output;
+
+        let out_elem = document.createElement("p");
+        out_elem.innerText = `${sc_sel.value} ${x_elem.value} => ${tg_sel.value} ${output}`;
+        v_elem.prepend(out_elem);
+    }
+</script>
+</body>
