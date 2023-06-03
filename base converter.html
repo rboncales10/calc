@@ -55,7 +55,7 @@
         console.log(`source_radix: ${source_radix}`)
 
         for (let i = source_value.length - 1; i >= 0; i--){
-            let c_index = source_chars.indexOf(source_value[i]);
+            let c_index = source_chars.indexOf(source_value[i].toUpperCase());
             if (c_index === -1){
                 alert(`INVALID CHARACTER ${source_value[i]} IN POSITION ${i + 1}`);
                 return;
